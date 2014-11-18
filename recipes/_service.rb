@@ -67,6 +67,15 @@ service_config = JSON.parse(node['consul']['extra_params'].to_json)
 service_config['data_dir'] = node['consul']['data_dir']
 num_cluster = node['consul']['bootstrap_expect'].to_i
 
+# Determine what join method to specify if not in bootstrap mode
+server_join_method_option = 'start_join'
+if (node['consul']['join_retry_enabled'])
+  server_join_method_option = 'retry_join'
+  if (!node['consul']['retry_interval'].nil?)
+    service_config['retry_interval'] = node['consul']['retry_interval']
+  end
+end
+
 case node['consul']['service_mode']
 when 'bootstrap'
   service_config['server'] = true
@@ -75,15 +84,15 @@ when 'cluster'
   service_config['server'] = true
   if num_cluster > 1
     service_config['bootstrap_expect'] = num_cluster
-    service_config['start_join'] = node['consul']['servers']
+    service_config[server_join_method_option] = node['consul']['servers']
   else
     service_config['bootstrap'] = true
   end
 when 'server'
   service_config['server'] = true
-  service_config['start_join'] = node['consul']['servers']
+  service_config[server_join_method_option] = node['consul']['servers']
 when 'client'
-  service_config['start_join'] = node['consul']['servers']
+  service_config[server_join_method_option] = node['consul']['servers']
 else
   Chef::Application.fatal! %Q(node['consul']['service_mode'] must be "bootstrap", "cluster", "server", or "client")
 end

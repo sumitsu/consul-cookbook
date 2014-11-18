@@ -58,7 +58,7 @@ Installs and configures [Consul][1].
     <td><tt>bootstrap</tt></td>
   </tr>
     <tr>
-    <td><tt>['consul'][bootstrap_expect]</tt></td>
+    <td><tt>['consul']['bootstrap_expect']</tt></td>
     <td>String</td>
     <td>When bootstrapping a cluster, the number of server nodes to expect.</td>
     <td><tt>nil</tt></td>
@@ -80,6 +80,18 @@ Installs and configures [Consul][1].
     <td>Array Strings</td>
     <td>Consul servers to join</td>
     <td><tt>[]</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['consul']['join_retry_enabled']</tt></td>
+    <td>Boolean</td>
+    <td><tt>true</tt> to use <tt>retry_join</tt> to specify join server list, <tt>false</false> to use <tt>start_join</tt></td>
+    <td><tt>false</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['consul']['retry_interval']</tt></td>
+    <td>String</td>
+    <td>if <tt>join_retry_enabled</tt> is <tt>true</tt>, interval (in seconds) between attempts to join cluster</td>
+    <td><tt>nil</tt></td>
   </tr>
   <tr>
     <td><tt>['consul']['bind_addr']</tt></td>
